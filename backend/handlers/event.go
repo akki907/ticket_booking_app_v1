@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"context"
-	"strconv"
+	"fmt"
 	"time"
 
 	"github.com/akki907/ticket_booking_app_v1/models"
@@ -34,12 +34,10 @@ func (h *EventHandler) GetMany(ctx *fiber.Ctx) error {
 }
 
 func (h *EventHandler) GetOne(ctx *fiber.Ctx) error {
-	eventId, _ := strconv.Atoi(ctx.Params("eventId"))
-
 	context, cancel := context.WithTimeout(context.Background(), time.Duration(5*time.Second))
 	defer cancel()
 
-	event, err := h.repository.GetOne(context, uint(eventId))
+	event, err := h.repository.GetOne(context, ctx.Params("eventId"))
 
 	if err != nil {
 		return ctx.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
@@ -68,7 +66,6 @@ func (h *EventHandler) CreateOne(ctx *fiber.Ctx) error {
 			"data":    nil,
 		})
 	}
-
 	event, err := h.repository.CreateOne(context, event)
 
 	if err != nil {
@@ -87,11 +84,11 @@ func (h *EventHandler) CreateOne(ctx *fiber.Ctx) error {
 }
 
 func (h *EventHandler) UpdateOne(ctx *fiber.Ctx) error {
-	eventId, _ := strconv.Atoi(ctx.Params("eventId"))
 	updateData := make(map[string]interface{})
 
 	context, cancel := context.WithTimeout(context.Background(), time.Duration(5*time.Second))
 	defer cancel()
+	fmt.Println(updateData, ctx.Params("eventId"))
 
 	if err := ctx.BodyParser(&updateData); err != nil {
 		return ctx.Status(fiber.StatusUnprocessableEntity).JSON(&fiber.Map{
@@ -101,7 +98,7 @@ func (h *EventHandler) UpdateOne(ctx *fiber.Ctx) error {
 		})
 	}
 
-	event, err := h.repository.UpdateOne(context, uint(eventId), updateData)
+	event, err := h.repository.UpdateOne(context, ctx.Params("eventId"), updateData)
 
 	if err != nil {
 		return ctx.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
@@ -119,12 +116,11 @@ func (h *EventHandler) UpdateOne(ctx *fiber.Ctx) error {
 }
 
 func (h *EventHandler) DeleteOne(ctx *fiber.Ctx) error {
-	eventId, _ := strconv.Atoi(ctx.Params("eventId"))
 
 	context, cancel := context.WithTimeout(context.Background(), time.Duration(5*time.Second))
 	defer cancel()
 
-	err := h.repository.DeleteOne(context, uint(eventId))
+	err := h.repository.DeleteOne(context, ctx.Params("eventId"))
 
 	if err != nil {
 		return ctx.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
