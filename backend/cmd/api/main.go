@@ -24,11 +24,13 @@ func main() {
 	app.Use(cors.New())
 	// Repositories
 	eventRepository := repositories.NewEventRepository(db)
+	ticketRepository := repositories.NewTicketRepository(db)
 
 	// Routing
 	server := app.Group("/api")
 
 	handlers.NewEventRepository(server.Group("/event"), eventRepository)
+	handlers.NewTicketHandler(server.Group("/ticket"), ticketRepository)
 
 	// handle unavailable route
 	app.Use(func(c *fiber.Ctx) error {
