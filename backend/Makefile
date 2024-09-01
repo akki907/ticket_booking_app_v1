@@ -1,12 +1,12 @@
-# start: build
-# 	@./bin/main
+start: build
+	@./bin/main
 
-# build:
-# 	@go build -o ./bin ./cmd/api/main.go
+build:
+	@go build -o ./bin ./cmd/api/main.go
 
-start: 
+docker_start: 
 	@docker compose up --build
 	
-stop:
+docker_stop:
 	@docker-compose rm -v --force --stop
 	@docker rmi ticket-booking

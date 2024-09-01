@@ -6,7 +6,9 @@ import (
 	"github.com/akki907/ticket_booking_app_v1/config"
 	"github.com/akki907/ticket_booking_app_v1/db"
 	"github.com/akki907/ticket_booking_app_v1/handlers"
+	middlewares "github.com/akki907/ticket_booking_app_v1/middleware"
 	"github.com/akki907/ticket_booking_app_v1/repositories"
+	"github.com/akki907/ticket_booking_app_v1/services"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
@@ -25,12 +27,19 @@ func main() {
 	// Repositories
 	eventRepository := repositories.NewEventRepository(db)
 	ticketRepository := repositories.NewTicketRepository(db)
+	authRepository := repositories.NewAuthRepository(db)
+
+	// Service
+	authService := services.NewAuthService(authRepository)
 
 	// Routing
 	server := app.Group("/api")
+	handlers.NewAuthHandler(server.Group("/auth"), authService)
 
-	handlers.NewEventRepository(server.Group("/event"), eventRepository)
-	handlers.NewTicketHandler(server.Group("/ticket"), ticketRepository)
+	privateRoutes := server.Use(middlewares.AuthProtected(db))
+
+	handlers.NewEventRepository(privateRoutes.Group("/event"), eventRepository)
+	handlers.NewTicketHandler(privateRoutes.Group("/ticket"), ticketRepository)
 
 	// handle unavailable route
 	app.Use(func(c *fiber.Ctx) error {
