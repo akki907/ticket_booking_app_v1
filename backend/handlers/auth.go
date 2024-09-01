@@ -50,7 +50,11 @@ func (h *AuthHandler) Login(ctx *fiber.Ctx) error {
 		"message": "Successfully logged in",
 		"data": &fiber.Map{
 			"token": token,
-			"user":  user,
+			"user": &fiber.Map{
+				"id":    user.ID,
+				"email": user.Email,
+				"role":  user.Role,
+			},
 		},
 	})
 }

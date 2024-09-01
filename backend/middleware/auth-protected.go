@@ -3,9 +3,9 @@ package middlewares
 import (
 	"errors"
 	"fmt"
-	"os"
 	"strings"
 
+	"github.com/akki907/ticket_booking_app_v1/config"
 	"github.com/akki907/ticket_booking_app_v1/models"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/log"
@@ -38,7 +38,7 @@ func AuthProtected(db *gorm.DB) fiber.Handler {
 		}
 
 		tokenStr := tokenParts[1]
-		secret := []byte(os.Getenv("JWT_SECRET"))
+		secret := []byte(config.NewEnvConfig().JwtSecret)
 
 		token, err := jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {
 			if token.Method.Alg() != jwt.GetSigningMethod("HS256").Alg() {

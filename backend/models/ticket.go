@@ -19,10 +19,10 @@ type Ticket struct {
 }
 
 type TicketRepository interface {
-	GetMany(ctx context.Context) ([]*Ticket, error)
-	GetOne(ctx context.Context, ticketId any) (*Ticket, error)
-	CreateOne(ctx context.Context, ticket *Ticket) (*Ticket, error)
-	UpdateOne(ctx context.Context, ticketId any, updateData map[string]interface{}) (*Ticket, error)
+	GetMany(ctx context.Context, userId uuid.UUID) ([]*Ticket, error)
+	GetOne(ctx context.Context, userId uuid.UUID, ticketId uuid.UUID) (*Ticket, error)
+	CreateOne(ctx context.Context, userId uuid.UUID, ticket *Ticket) (*Ticket, error)
+	UpdateOne(ctx context.Context, userId uuid.UUID, ticketId uuid.UUID, updateData map[string]interface{}) (*Ticket, error)
 }
 
 type ValidateTicket struct {

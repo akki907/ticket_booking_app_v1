@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/akki907/ticket_booking_app_v1/models"
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
@@ -25,7 +26,7 @@ func (r *EventRepository) GetMany(ctx context.Context) ([]*models.Event, error) 
 	return events, nil
 }
 
-func (r *EventRepository) GetOne(ctx context.Context, eventId any) (*models.Event, error) {
+func (r *EventRepository) GetOne(ctx context.Context, eventId uuid.UUID) (*models.Event, error) {
 	event := &models.Event{}
 	res := r.db.Model(&models.Event{}).Where("id = ?", eventId).First(&event)
 	if res.Error != nil {
@@ -42,7 +43,7 @@ func (r *EventRepository) CreateOne(ctx context.Context, event *models.Event) (*
 	return event, nil
 }
 
-func (r *EventRepository) UpdateOne(ctx context.Context, eventId any, updateData map[string]interface{}) (*models.Event, error) {
+func (r *EventRepository) UpdateOne(ctx context.Context, eventId uuid.UUID, updateData map[string]interface{}) (*models.Event, error) {
 	event := &models.Event{}
 	fmt.Println(updateData, eventId)
 	res := r.db.Model(&models.Event{}).Where("id = ?", eventId).Updates(updateData)
@@ -52,7 +53,7 @@ func (r *EventRepository) UpdateOne(ctx context.Context, eventId any, updateData
 	return event, nil
 }
 
-func (r *EventRepository) DeleteOne(ctx context.Context, eventId any) error {
+func (r *EventRepository) DeleteOne(ctx context.Context, eventId uuid.UUID) error {
 	res := r.db.Model(&models.Event{}).Where("id = ?", eventId).Delete(&models.Event{})
 	if res.Error != nil {
 		return res.Error

@@ -21,10 +21,10 @@ type Event struct {
 
 type EventRepository interface {
 	GetMany(ctx context.Context) ([]*Event, error)
-	GetOne(ctx context.Context, eventId any) (*Event, error)
+	GetOne(ctx context.Context, eventId uuid.UUID) (*Event, error)
 	CreateOne(ctx context.Context, event *Event) (*Event, error)
-	UpdateOne(ctx context.Context, eventId any, updateData map[string]interface{}) (*Event, error)
-	DeleteOne(ctx context.Context, eventId any) error
+	UpdateOne(ctx context.Context, eventId uuid.UUID, updateData map[string]interface{}) (*Event, error)
+	DeleteOne(ctx context.Context, eventId uuid.UUID) error
 }
 
 func (event *Event) BeforeCreate(tx *gorm.DB) (err error) {

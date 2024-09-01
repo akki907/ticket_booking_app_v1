@@ -7,6 +7,7 @@ import (
 
 	"github.com/akki907/ticket_booking_app_v1/models"
 	"github.com/gofiber/fiber/v2"
+	"github.com/google/uuid"
 )
 
 type EventHandler struct {
@@ -37,7 +38,15 @@ func (h *EventHandler) GetOne(ctx *fiber.Ctx) error {
 	context, cancel := context.WithTimeout(context.Background(), time.Duration(5*time.Second))
 	defer cancel()
 
-	event, err := h.repository.GetOne(context, ctx.Params("eventId"))
+	eventId, err := uuid.Parse(ctx.Params("eventId"))
+	if err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
+			"status":  "fail",
+			"message": "Invalid event ID",
+		})
+	}
+
+	event, err := h.repository.GetOne(context, eventId)
 
 	if err != nil {
 		return ctx.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
@@ -98,7 +107,15 @@ func (h *EventHandler) UpdateOne(ctx *fiber.Ctx) error {
 		})
 	}
 
-	event, err := h.repository.UpdateOne(context, ctx.Params("eventId"), updateData)
+	eventId, err := uuid.Parse(ctx.Params("eventId"))
+	if err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
+			"status":  "fail",
+			"message": "Invalid event ID",
+		})
+	}
+
+	event, err := h.repository.UpdateOne(context, eventId, updateData)
 
 	if err != nil {
 		return ctx.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
@@ -120,7 +137,15 @@ func (h *EventHandler) DeleteOne(ctx *fiber.Ctx) error {
 	context, cancel := context.WithTimeout(context.Background(), time.Duration(5*time.Second))
 	defer cancel()
 
-	err := h.repository.DeleteOne(context, ctx.Params("eventId"))
+	eventId, err := uuid.Parse(ctx.Params("eventId"))
+	if err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
+			"status":  "fail",
+			"message": "Invalid event ID",
+		})
+	}
+
+	err = h.repository.DeleteOne(context, eventId)
 
 	if err != nil {
 		return ctx.Status(fiber.StatusBadRequest).JSON(&fiber.Map{

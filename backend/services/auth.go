@@ -4,9 +4,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"os"
 	"time"
 
+	"github.com/akki907/ticket_booking_app_v1/config"
 	"github.com/akki907/ticket_booking_app_v1/models"
 	"github.com/akki907/ticket_booking_app_v1/utils"
 	"github.com/golang-jwt/jwt/v5"
@@ -38,7 +38,7 @@ func (s *AuthService) Login(ctx context.Context, loginData *models.AuthCredentia
 		"exp":  time.Now().Add(time.Hour * 168).Unix(),
 	}
 
-	token, err := utils.GenerateJWT(claims, jwt.SigningMethodHS256, os.Getenv("JWT_SECRET"))
+	token, err := utils.GenerateJWT(claims, jwt.SigningMethodHS256, config.NewEnvConfig().JwtSecret)
 
 	if err != nil {
 		return "", nil, err
@@ -75,7 +75,7 @@ func (s *AuthService) Register(ctx context.Context, registerData *models.AuthCre
 	}
 
 	// Generate the JWT
-	token, err := utils.GenerateJWT(claims, jwt.SigningMethodHS256, os.Getenv("JWT_SECRET"))
+	token, err := utils.GenerateJWT(claims, jwt.SigningMethodHS256, config.NewEnvConfig().JwtSecret)
 	if err != nil {
 		return "", nil, err
 	}

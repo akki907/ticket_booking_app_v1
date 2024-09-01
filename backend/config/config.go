@@ -13,6 +13,7 @@ type EnvConfig struct {
 	DBUser     string `env:"DB_USER,required"`
 	DBPassword string `env:"DB_PASSWORD,required"`
 	DBSSLMode  string `env:"DB_SSLMODE,required"`
+	JwtSecret  string `env:"JWT_SECRET,required"`
 }
 
 func NewEnvConfig() *EnvConfig {
